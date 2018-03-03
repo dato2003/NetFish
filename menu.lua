@@ -11,12 +11,6 @@ local scene = composer.newScene()
 local widget = require( "widget" )
 local sqlite3 = require( "sqlite3" )
 
---[[local socket = require ( "socket" )
-local smtp = require ( "socket.smtp" )
-local ssl = require ( "ssl" )
-local https = require ( "ssl.https" )
-local ltn12 = require ( "ltn12" )]]
-
 local ftp = require ( "ftp" )
 local DBconnection = ftp.newConnection{
         host = "files.000webhost.com",

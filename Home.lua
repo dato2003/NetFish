@@ -18,13 +18,49 @@ local DBconnection = ftp.newConnection{
         port = 21 -- Optional. Will default to 21.
 }
 --------------------------------------------
+function Upload(LocalName,RemoteName)
+    DBconnection:upload{
+      localFile = system.pathForFile(LocalName, system.DocumentsDirectory),
+      remoteFile =  "/MyProjects/SocialNet/".. RemoteName .. "",
+      onSuccess = onUploadSuccess,
+      onError = onError
+    }
+    print("Uploaded to Path : /MyProjects/SocialNet/".. RemoteName .. "")
+end
+function Download(LocalName,RemoteName)
+    DBconnection:download{
+      remoteFile = "/MyProjects/SocialNet/".. RemoteName .. "",
+      localFile = LocalName,
+      onSuccess = onDownloadSuccess,
+      onError = onError
+    }
+end
 
-function Upload(event)
+function UploadStuff(event)
 		if (event.phase == "began") then
-
+      composer.gotoScene( "Upload","fade",500 )
 		end
 end
 
+function scrollListener( event )
+
+    local phase = event.phase
+    if ( phase == "began" ) then print( "Scroll view was touched" )
+    elseif ( phase == "moved" ) then print( "Scroll view was moved" )
+    elseif ( phase == "ended" ) then print( "Scroll view was released" )
+    end
+
+    -- In the event a scroll limit is reached...
+    if ( event.limitReached ) then
+        if ( event.direction == "up" ) then print( "Reached bottom limit" )
+        elseif ( event.direction == "down" ) then print( "Reached top limit" )
+        elseif ( event.direction == "left" ) then print( "Reached right limit" )
+        elseif ( event.direction == "right" ) then print( "Reached left limit" )
+        end
+    end
+
+    return true
+end
 
 function scene:create( event )
 
@@ -42,7 +78,7 @@ function scene:create( event )
 	local UploadBTN = widget.newButton
 	{
         label = "Upload",
-        onEvent = Upload,
+        onEvent = UploadStuff,
         emboss = false,
         -- Properties for a rounded rectangle button
         shape = "roundedRect",
@@ -55,21 +91,40 @@ function scene:create( event )
   }
 	UploadBTN.x = display.contentCenterX
 	UploadBTN.y = display.contentCenterY+200
---[[
-	local scrollView = widget.newScrollView
+
+
+  local RefreshBTN = widget.newButton
+	{
+        label = "Refresh",
+        onEvent = Refresh,
+        emboss = false,
+        -- Properties for a rounded rectangle button
+        shape = "circle",
+        radius = 40,
+        fillColor = { default={0,0,1,1}, over={1,0.1,0.7,0.4} },
+        strokeColor = { default={0,0.4,1,1}, over={0.8,0.8,1,1} },
+        strokeWidth = 4
+  }
+	RefreshBTN.x = display.contentCenterX+100
+  RefreshBTN.y = display.contentCenterY-230
+
+
+	local MainView = widget.newScrollView
   {
         width = 300,
         height = 400,
         scrollWidth = 600,
         scrollHeight = 800,
-        listener = scrollListener
+        listener = scrollListener,
+        hideBackground = true
   }
-	]]
+
 
 
 	sceneGroup:insert(Background)
 	sceneGroup:insert(UploadBTN)
-	--sceneGroup:insert(scrollView)
+  sceneGroup:insert(RefreshBTN)
+	sceneGroup:insert(MainView)
 end
 
 
