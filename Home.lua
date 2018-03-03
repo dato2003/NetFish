@@ -120,26 +120,11 @@ function Refresh(event)
   end
 end
 
-function scrollListener( event )
-
-    local phase = event.phase
-    if ( phase == "began" ) then print( "Scroll view was touched" )
-    elseif ( phase == "moved" ) then print( "Scroll view was moved" )
-    elseif ( phase == "ended" ) then print( "Scroll view was released" )
-    end
-
-    -- In the event a scroll limit is reached...
-    if ( event.limitReached ) then
-        if ( event.direction == "up" ) then print( "Reached bottom limit" )
-        elseif ( event.direction == "down" ) then print( "Reached top limit" )
-        elseif ( event.direction == "left" ) then print( "Reached right limit" )
-        elseif ( event.direction == "right" ) then print( "Reached left limit" )
-        end
-    end
-
-    return true
+function Logout(event)
+  if event.phase == "began" then
+    composer.gotoScene( "menu","fade",500 )
+  end
 end
-
 function scene:create( event )
 
 	-- Called when the scene's view does not exist.
@@ -160,16 +145,32 @@ function scene:create( event )
         emboss = false,
         -- Properties for a rounded rectangle button
         shape = "roundedRect",
-        width = 200,
+        width = 100,
         height = 40,
         cornerRadius = 2,
         fillColor = { default={0,0,1,1}, over={1,0.1,0.7,0.4} },
         strokeColor = { default={0,0.4,1,1}, over={0.8,0.8,1,1} },
         strokeWidth = 4
   }
-	UploadBTN.x = display.contentCenterX
+	UploadBTN.x = display.contentCenterX-100
 	UploadBTN.y = display.contentCenterY+230
 
+  local BackBTN = widget.newButton
+	{
+        label = "Log out",
+        onEvent = Logout,
+        emboss = false,
+        -- Properties for a rounded rectangle button
+        shape = "roundedRect",
+        width = 100,
+        height = 40,
+        cornerRadius = 2,
+        fillColor = { default={0,0,1,1}, over={1,0.1,0.7,0.4} },
+        strokeColor = { default={0,0.4,1,1}, over={0.8,0.8,1,1} },
+        strokeWidth = 4
+  }
+	BackBTN.x = display.contentCenterX+100
+	BackBTN.y = display.contentCenterY+230
 
   local RefreshBTN = widget.newButton
 	{
@@ -190,7 +191,7 @@ function scene:create( event )
   MainView = widget.newScrollView
   {
     x = screenW*0.5,
-    y = screenH*0.4,
+    y = screenH*0.5,
     width = screenW*0.9,
     height = screenH*0.7,
     backgroundColor = { 0.8, 0.8, 0.8 },
@@ -202,12 +203,14 @@ function scene:create( event )
 
   -------------------------------------- MAIN VIEW STUFF --------------------------------------
 
+
   -------------------------------------- MAIN VIEW STUFF --------------------------------------
 
 	sceneGroup:insert(Background)
 	sceneGroup:insert(UploadBTN)
 	sceneGroup:insert(MainView)
   sceneGroup:insert(RefreshBTN)
+  sceneGroup:insert(BackBTN)
 end
 
 
