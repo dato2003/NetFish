@@ -14,7 +14,7 @@ local DBconnection = ftp.newConnection{
 --------------------------------------------------------------------------------
 function Upload(LocalName,RemoteName)
     DBconnection:upload{
-      localFile = system.pathForFile(LocalName, system.DocumentsDirectory),
+      localFile = system.pathForFile(LocalName, system.TemporaryDirectory),
       remoteFile =  "/MyProjects/SocialNet/".. RemoteName .. "",
       onSuccess = onUploadSuccess,
       onError = onError
@@ -34,7 +34,7 @@ function UploadImages(event)
 		if (event.phase == "began") then
 
         local function onComplete(event)
-            id = "photo" .. math.random(1,100) .. ".png"
+            id = "photo" .. math.random(1,10000) .. ".png"
             Upload("photo.png",id)
         end
 

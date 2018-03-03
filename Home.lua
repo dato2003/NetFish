@@ -20,7 +20,7 @@ local DBconnection = ftp.newConnection{
 --------------------------------------------
 function Upload(LocalName,RemoteName)
     DBconnection:upload{
-      localFile = system.pathForFile(LocalName, system.DocumentsDirectory),
+      localFile = system.pathForFile(LocalName, system.TemporaryDirectory),
       remoteFile =  "/MyProjects/SocialNet/".. RemoteName .. "",
       onSuccess = onUploadSuccess,
       onError = onError
@@ -62,6 +62,12 @@ function scrollListener( event )
     return true
 end
 
+function Refresh(event)
+  if event.phase == "began" then
+
+  end
+end
+
 function scene:create( event )
 
 	-- Called when the scene's view does not exist.
@@ -90,7 +96,7 @@ function scene:create( event )
         strokeWidth = 4
   }
 	UploadBTN.x = display.contentCenterX
-	UploadBTN.y = display.contentCenterY+200
+	UploadBTN.y = display.contentCenterY+230
 
 
   local RefreshBTN = widget.newButton
@@ -109,16 +115,18 @@ function scene:create( event )
   RefreshBTN.y = display.contentCenterY-230
 
 
-	local MainView = widget.newScrollView
+	MainView = widget.newScrollView
   {
         width = 300,
-        height = 400,
-        scrollWidth = 600,
-        scrollHeight = 800,
+        height = 300,
+        --scrollWidth = 300,
+        --scrollHeight = 400,
         listener = scrollListener,
-        hideBackground = true
+        --hideBackground = true
+        horizontalScrollDisabled = true
   }
-
+  MainView.x = display.contentCenterX
+  MainView.y = display.contentCenterY
 
 
 	sceneGroup:insert(Background)
