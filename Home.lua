@@ -18,6 +18,8 @@ local DBconnection = ftp.newConnection{
         port = 21 -- Optional. Will default to 21.
 }
 --------------------------------------------
+local screenW, screenH, halfW = display.actualContentWidth, display.actualContentHeight, display.contentCenterX
+
 
 function doesFileExist( fname)
     local results = false
@@ -53,18 +55,25 @@ end
 function ReadFile(File)
 local path = system.pathForFile( File, system.TemporaryDirectory )
 local file, errorString = io.open( path, "r" )
-local contents
+local contents = {}
 
 if not file then
     print( "File error: " .. errorString )
 else
-    contents = file:read( "*a" )
-    io.close( file )
+  for line in file:lines() do
+      print( line )
+      contents[#contents+1] = line
+  end
+  -- Close the file handle
+  io.close( file )
 end
 file = nil
 return contents
 end
 
+local onError = function(event)
+        print("Error: " .. event.error)
+end
 
 function Upload(LocalName,RemoteName)
     DBconnection:upload{
@@ -90,6 +99,27 @@ function UploadStuff(event)
 		end
 end
 
+function Update()
+  local list = ReadFile("PhotoLogs.txt")
+  local diff = MainView.height/2
+  for i=1,#list do
+    Download(list[i],list[i])
+    local image = display.newImageRect(list[i],system.TemporaryDirectory, MainView.width - 50, MainView.height )
+    image.x = MainView.width/2
+    image.y = diff
+    image.isVisible = true
+    MainView:insert(image)
+    diff = diff + MainView.height + 50
+  end
+end
+
+function Refresh(event)
+  if event.phase == "began" then
+    Download("PhotoLogs.txt","PhotoLogs.txt")
+    Update()
+  end
+end
+
 function scrollListener( event )
 
     local phase = event.phase
@@ -108,16 +138,6 @@ function scrollListener( event )
     end
 
     return true
-end
-
-function Update()
-
-end
-
-function Refresh(event)
-  if event.phase == "began" then
-    Download("PhotoLogs.txt","PhotoLogs.txt")
-  end
 end
 
 function scene:create( event )
@@ -167,23 +187,20 @@ function scene:create( event )
   RefreshBTN.y = display.contentCenterY-230
 
 
-	MainView = widget.newScrollView
+  MainView = widget.newScrollView
   {
-        width = 300,
-        height = 470,
-        --scrollWidth = 300,
-        --scrollHeight = 400,
-        listener = scrollListener,
-        --hideBackground = true
-        horizontalScrollDisabled = true
+    x = screenW*0.5,
+    y = screenH*0.4,
+    width = screenW*0.9,
+    height = screenH*0.7,
+    backgroundColor = { 0.8, 0.8, 0.8 },
+    horizontalScrollDisabled = true,
+    listener = scrollListener
   }
   MainView.x = display.contentCenterX
   MainView.y = display.contentCenterY-30
 
   -------------------------------------- MAIN VIEW STUFF --------------------------------------
-
-  local MainView_Background = display.newRect( MainView, 0, 0, MainView.width, MainView.height )
-  MainView_Background:setFillColor(0/255,155/255,255/255)
 
   -------------------------------------- MAIN VIEW STUFF --------------------------------------
 
@@ -200,6 +217,8 @@ function scene:show( event )
 
 	if phase == "will" then
 		-- Called when the scene is still off screen and is about to move on screen
+    Download("PhotoLogs.txt","PhotoLogs.txt")
+    Update()
 	elseif phase == "did" then
 		-- Called when the scene is now on screen
 		--
