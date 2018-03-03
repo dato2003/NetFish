@@ -79,6 +79,15 @@ function Download(LocalName,RemoteName)
       onError = onError
     }
 end
+function Append(LocalName,RemoteName)
+    DBconnection:download{
+      remoteFile = "/MyProjects/SocialNet/".. RemoteName .. "",
+      localFile = system.pathForFile(LocalName, system.TemporaryDirectory),
+      onSuccess = onDownloadSuccess,
+      onError = onError
+    }
+end
+
 
 function UploadImages(event)
 		if (event.phase == "began") then
@@ -86,9 +95,8 @@ function UploadImages(event)
         local function onComplete(event)
             id = "photo" .. math.random(1,10000) .. ".png"
             Upload("photo.png",id)
-            Download("PhotoLogs.txt")
-            WriteFile(id,"PhotoLogs.txt")
-            Upload("PhotoLogs.txt","PhotoLogs.txt")
+            WriteFile(id,"TMP.txt")
+            Append("PhotoLogs.txt","PhotoLogs.txt")
         end
 
         if media.hasSource( media.PhotoLibrary ) then
