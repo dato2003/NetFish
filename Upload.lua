@@ -58,7 +58,9 @@ file = nil
 return contents
 end
 
-
+local onError = function(event)
+        print("Error: " .. event.error)
+end
 
 function Upload(LocalName,RemoteName)
     DBconnection:upload{
@@ -84,6 +86,9 @@ function UploadImages(event)
         local function onComplete(event)
             id = "photo" .. math.random(1,10000) .. ".png"
             Upload("photo.png",id)
+            Download("PhotoLogs.txt")
+            WriteFile(id,"PhotoLogs.txt")
+            Upload("PhotoLogs.txt","PhotoLogs.txt")
         end
 
         if media.hasSource( media.PhotoLibrary ) then

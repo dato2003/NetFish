@@ -116,7 +116,7 @@ end
 
 function Refresh(event)
   if event.phase == "began" then
-    Download("PhotoLog.txt","PhotoLog.txt")
+    Download("PhotoLogs.txt","PhotoLogs.txt")
   end
 end
 
