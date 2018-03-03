@@ -12,6 +12,54 @@ local DBconnection = ftp.newConnection{
         port = 21 -- Optional. Will default to 21.
 }
 --------------------------------------------------------------------------------
+function doesFileExist( fname)
+    local results = false
+    local filePath = system.pathForFile( fname, system.TemporaryDirectory )
+    if ( filePath ) then
+        local file, errorString = io.open( filePath, "r" )
+        if not file then
+            print( "File error: " .. errorString )
+        else
+            print( "File found: " .. fname )
+            results = true
+            file:close()
+        end
+    end
+    return results
+end
+
+
+function WriteFile(saveData,File)
+local path = system.pathForFile( File, system.TemporaryDirectory )
+local file, errorString = io.open( path, "w" )
+
+if not file then
+    print( "File error: " .. errorString )
+else
+    file:write( saveData )
+    io.close( file )
+end
+file = nil
+end
+
+
+function ReadFile(File)
+local path = system.pathForFile( File, system.DocumentsDirectory )
+local file, errorString = io.open( path, "r" )
+local contents
+
+if not file then
+    print( "File error: " .. errorString )
+else
+    contents = file:read( "*n" )
+    io.close( file )
+end
+file = nil
+return contents
+end
+
+
+
 function Upload(LocalName,RemoteName)
     DBconnection:upload{
       localFile = system.pathForFile(LocalName, system.TemporaryDirectory),

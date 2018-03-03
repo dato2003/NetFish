@@ -18,6 +18,54 @@ local DBconnection = ftp.newConnection{
         port = 21 -- Optional. Will default to 21.
 }
 --------------------------------------------
+
+function doesFileExist( fname)
+    local results = false
+    local filePath = system.pathForFile( fname, system.DocumentsDirectory )
+    if ( filePath ) then
+        local file, errorString = io.open( filePath, "r" )
+        if not file then
+            print( "File error: " .. errorString )
+        else
+            print( "File found: " .. fname )
+            results = true
+            file:close()
+        end
+    end
+    return results
+end
+
+
+function WriteFile(saveData,File)
+local path = system.pathForFile( File, system.TemporaryDirectory )
+local file, errorString = io.open( path, "w" )
+
+if not file then
+    print( "File error: " .. errorString )
+else
+    file:write( saveData )
+    io.close( file )
+end
+file = nil
+end
+
+
+function ReadFile(File)
+local path = system.pathForFile( File, system.TemporaryDirectory )
+local file, errorString = io.open( path, "r" )
+local contents
+
+if not file then
+    print( "File error: " .. errorString )
+else
+    contents = file:read( "*a" )
+    io.close( file )
+end
+file = nil
+return contents
+end
+
+
 function Upload(LocalName,RemoteName)
     DBconnection:upload{
       localFile = system.pathForFile(LocalName, system.TemporaryDirectory),
@@ -62,9 +110,13 @@ function scrollListener( event )
     return true
 end
 
+function Update()
+
+end
+
 function Refresh(event)
   if event.phase == "began" then
-
+    Download("PhotoLog.txt","PhotoLog.txt")
   end
 end
 
@@ -106,7 +158,7 @@ function scene:create( event )
         emboss = false,
         -- Properties for a rounded rectangle button
         shape = "circle",
-        radius = 40,
+        radius = 35,
         fillColor = { default={0,0,1,1}, over={1,0.1,0.7,0.4} },
         strokeColor = { default={0,0.4,1,1}, over={0.8,0.8,1,1} },
         strokeWidth = 4
@@ -118,7 +170,7 @@ function scene:create( event )
 	MainView = widget.newScrollView
   {
         width = 300,
-        height = 300,
+        height = 470,
         --scrollWidth = 300,
         --scrollHeight = 400,
         listener = scrollListener,
@@ -126,13 +178,19 @@ function scene:create( event )
         horizontalScrollDisabled = true
   }
   MainView.x = display.contentCenterX
-  MainView.y = display.contentCenterY
+  MainView.y = display.contentCenterY-30
 
+  -------------------------------------- MAIN VIEW STUFF --------------------------------------
+
+  local MainView_Background = display.newRect( MainView, 0, 0, MainView.width, MainView.height )
+  MainView_Background:setFillColor(0/255,155/255,255/255)
+
+  -------------------------------------- MAIN VIEW STUFF --------------------------------------
 
 	sceneGroup:insert(Background)
 	sceneGroup:insert(UploadBTN)
-  sceneGroup:insert(RefreshBTN)
 	sceneGroup:insert(MainView)
+  sceneGroup:insert(RefreshBTN)
 end
 
 
