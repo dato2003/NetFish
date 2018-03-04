@@ -164,10 +164,10 @@ function GetHouse(event)
     House = "Kipling"
   end
   if event.row == 3 then
-    House = "Mill"
+    House = "Milne"
   end
   if event.row == 4 then
-    House = "wells"
+    House = "Wells"
   end
   if event.row == 5 then
     House = "School_House"
@@ -226,7 +226,7 @@ function scene:create( event )
           align = "center",
           labelPadding = 10,
           startIndex = 1,
-          labels = {"Scroll Down", "Kipling", "Mill", "Wells", "School House" },
+          labels = {"Scroll Down", "Kipling", "Milne", "Wells", "School House" },
           columnColor = {0/255,0/255,0/255}
       }
   }

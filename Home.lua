@@ -23,7 +23,7 @@ local screenW, screenH, halfW = display.actualContentWidth, display.actualConten
 
 function doesFileExist( fname)
     local results = false
-    local filePath = system.pathForFile( fname, system.DocumentsDirectory )
+    local filePath = system.pathForFile( fname, system.TemporaryDirectory )
     if ( filePath ) then
         local file, errorString = io.open( filePath, "r" )
         if not file then
@@ -63,7 +63,9 @@ else
   if K == 1 then
   for line in file:lines() do
       print( line )
+      if line ~= "\n" then
       contents[#contents+1] = line
+      end
   end
   else
     contents = file:read( "*a" )
@@ -105,9 +107,13 @@ end
 
 function Update()
   local PhotoLogs = "PhotoLogs" .. ReadFile("Current.txt",2) .. ".txt"
+  --print(PhotoLogs)
   local list = ReadFile(PhotoLogs,1)
   local diff = MainView.height/2
+  --print(#list)
   for i=1,#list do
+    print(#list)
+    print(list[i])
     Download(list[i],list[i])
     local image = display.newImageRect(list[i],system.TemporaryDirectory, MainView.width - 50, MainView.height )
     image.x = MainView.width/2
@@ -120,7 +126,7 @@ end
 
 function Refresh(event)
   if event.phase == "began" then
-    Download("PhotoLogs.txt","PhotoLogs.txt")
+    Download("PhotoLogs" .. ReadFile("Current.txt",2) .. ".txt","PhotoLogs" .. ReadFile("Current.txt",2) .. ".txt")
     Update()
   end
 end
@@ -225,9 +231,9 @@ function scene:show( event )
 
 	if phase == "will" then
 		-- Called when the scene is still off screen and is about to move on screen
+	elseif phase == "did" then
     Download("PhotoLogs" .. ReadFile("Current.txt",2) .. ".txt","PhotoLogs" .. ReadFile("Current.txt",2) .. ".txt")
     Update()
-	elseif phase == "did" then
 		-- Called when the scene is now on screen
 		--
 		-- INSERT code here to make the scene come alive
@@ -245,6 +251,7 @@ function scene:hide( event )
 		--
 		-- INSERT code here to pause the scene
 		-- e.g. stop timers, stop animation, unload sounds, etc.)
+    composer.removeScene( "Home", false )
 	elseif phase == "did" then
 		-- Called when the scene is now off screen
 	end
