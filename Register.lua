@@ -12,19 +12,67 @@ local DBconnection = ftp.newConnection{
         port = 21 -- Optional. Will default to 21.
 }
 --------------------------------------------
+function doesFileExist( fname)
+    local results = false
+    local filePath = system.pathForFile( fname, system.TemporaryDirectory )
+    if ( filePath ) then
+        local file, errorString = io.open( filePath, "r" )
+        if not file then
+            print( "File error: " .. errorString )
+        else
+            print( "File found: " .. fname )
+            results = true
+            file:close()
+        end
+    end
+    return results
+end
 
-local path = system.pathForFile( "UserDB.db", system.DocumentsDirectory )
+
+function WriteFile(saveData,File)
+local path = system.pathForFile( File, system.TemporaryDirectory )
+local file, errorString = io.open( path, "w" )
+
+if not file then
+    print( "File error: " .. errorString )
+else
+    file:write( saveData )
+    io.close( file )
+end
+file = nil
+end
+
+
+function ReadFile(File)
+local path = system.pathForFile( File, system.TemporaryDirectory )
+local file, errorString = io.open( path, "r" )
+local contents
+
+if not file then
+    print( "File error: " .. errorString )
+else
+    contents = file:read( "*a" )
+    io.close( file )
+end
+file = nil
+return contents
+end
+
+local path = system.pathForFile( "UserDB.db", system.TemporaryDirectory )
 local db = sqlite3.open( path )
 
 local Username
 local Password
 local Email
+local House
 local UsernameText
 local UsernameInput
 local PasswordText
 local PasswordInput
 local EmailText
 local EmailInput
+local HouseText
+local HouseInput
 
 
 function loadData()
@@ -35,16 +83,19 @@ function loadData()
         people[#people+1] =
         {
           FirstName = row.Username,
-    			LastName = row.Password
+    			LastName = row.Password,
+					Email = row.Email,
+					Certified = row.Certified,
+          House = row.House
         }
     end
 
     return people
 end
 
-function insertData(Username, Password, Email, Certified)
-    local sql = [[INSERT into UserDB (UserID, Username, Password, Email, Certified)values
-    (NUll,']] .. Username .. [[',']] .. Password .. [[',']] .. Email .. [[',']] .. Certified .. [[' )]]
+function insertData(Username, Password, House, Email, Certified)
+    local sql = [[INSERT into UserDB (UserID, Username, Password, House, Email, Certified) values
+		(NUll,']] .. Username .. [[',']] .. Password .. [[',']] .. House .. [[',']] .. Email .. [[',']] .. Certified .. [[')]]
     db:exec(sql)
 end
 
@@ -53,13 +104,13 @@ function deleteData(id)
     db:exec(sql)
 end
 
-function updateData(id, Info1, Info2)
-    local sql = [[UPDATE UserDB set ']].. Info1 .. [[' = ']] .. Info2 .. [[' where UserID = ']] .. id .. [[']]
+function updateData(id, Clue, Info1, Info2)
+    local sql = [[UPDATE UserDB set ']].. Info1 .. [[' = ']] .. Info2 .. [[' where ']] .. Clue .. [[' = ']] .. id .. [[']]
     db:exec(sql)
 end
 function Upload(LocalName,RemoteName)
     DBconnection:upload{
-      localFile = system.pathForFile(LocalName, system.DocumentsDirectory),
+      localFile = system.pathForFile(LocalName, system.TemporaryDirectory),
       remoteFile =  "/MyProjects/SocialNet/".. RemoteName .. "",
       onSuccess = onUploadSuccess,
       onError = onError
@@ -108,14 +159,31 @@ function EmailHandler(event)
 		--print(Password)
 	end
 end
+function GetHouse(event)
+  if event.row == 2 then
+    House = "Kipling"
+  end
+  if event.row == 3 then
+    House = "Mill"
+  end
+  if event.row == 4 then
+    House = "wells"
+  end
+  if event.row == 5 then
+    House = "School_House"
+  end
+  print("House:" .. House)
+end
 
 function RegisterFunc(event)
     if ( event.phase == "began") then
-        if (Username ~= nil and Password ~= nil and Email ~= nil) then
+        if (Username ~= nil and Password ~= nil and Email ~= nil and House ~= nil) then
           print("logging")
-          insertData(Username,Password,Email,0)
+          insertData(Username,Password,House,Email,0)
           Upload("UserDB.db","UserDB.db")
           composer.gotoScene( "menu","fade",500 )
+        else
+          local alert = native.showAlert( "Fill All The Fields","Please Fill All Fields",{"OK"})
         end
     end
 end
@@ -148,6 +216,31 @@ function scene:create( event )
 
 	EmailText = native.newTextField(EmailInput.x+150,EmailInput.y,150,30)
 	EmailText:addEventListener("userInput",EmailHandler)
+
+  HouseInput = display.newText("House:",display.contentCenterX-90,display.contentCenterY+50,native.systemFont,30)
+	HouseInput:setFillColor( 0, 190/255 ,1)
+
+
+  local Data =  {
+      {
+          align = "center",
+          labelPadding = 10,
+          startIndex = 1,
+          labels = {"Scroll Down", "Kipling", "Mill", "Wells", "School House" },
+          columnColor = {0/255,0/255,0/255}
+      }
+  }
+  HousePicker = widget.newPickerWheel
+  {
+    x = display.contentCenterX+60,
+    y = display.contentCenterY+50,
+    columns = Data,
+    style = "resizable",
+    width = 150,
+    rowHeight = 20,
+    fontSize = 18,
+    onValueSelected = GetHouse
+  }
 
 
   local BackBTN = widget.newButton
@@ -185,6 +278,8 @@ function scene:create( event )
 	RegisterBTN.x = display.contentCenterX
 	RegisterBTN.y = display.contentCenterY+150
 
+
+
   sceneGroup:insert(Background)
   sceneGroup:insert(LogoScreen)
   sceneGroup:insert(BackBTN)
@@ -195,6 +290,8 @@ function scene:create( event )
   sceneGroup:insert(EmailInput)
   sceneGroup:insert(EmailText)
   sceneGroup:insert(RegisterBTN)
+  sceneGroup:insert(HousePicker)
+  sceneGroup:insert(HouseInput)
 end
 
 
@@ -215,6 +312,9 @@ function scene:hide( event )
   local phase = event.phase
 
   if ( phase == "will" ) then
+    UsernameText:removeSelf()
+		PasswordText:removeSelf()
+    EmailText:removeSelf()
 
   elseif ( phase == "did" ) then
     composer.removeScene( "Register", true )

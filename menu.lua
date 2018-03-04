@@ -19,12 +19,57 @@ local DBconnection = ftp.newConnection{
         port = 21 -- Optional. Will default to 21.
 }
 --------------------------------------------
+function doesFileExist( fname)
+    local results = false
+    local filePath = system.pathForFile( fname, system.TemporaryDirectory )
+    if ( filePath ) then
+        local file, errorString = io.open( filePath, "r" )
+        if not file then
+            print( "File error: " .. errorString )
+        else
+            print( "File found: " .. fname )
+            results = true
+            file:close()
+        end
+    end
+    return results
+end
 
-local path = system.pathForFile( "UserDB.db", system.DocumentsDirectory )
+
+function WriteFile(saveData,File)
+local path = system.pathForFile( File, system.TemporaryDirectory )
+local file, errorString = io.open( path, "w" )
+
+if not file then
+    print( "File error: " .. errorString )
+else
+    file:write( saveData )
+    io.close( file )
+end
+file = nil
+end
+
+
+function ReadFile(File)
+local path = system.pathForFile( File, system.TemporaryDirectory )
+local file, errorString = io.open( path, "r" )
+local contents
+
+if not file then
+    print( "File error: " .. errorString )
+else
+    contents = file:read( "*n" )
+    io.close( file )
+end
+file = nil
+return contents
+end
+
+local path = system.pathForFile( "UserDB.db", system.TemporaryDirectory )
 local db = sqlite3.open( path )
 
 local tableSetup = [[CREATE TABLE IF NOT EXISTS UserDB
-( UserID INTEGER PRIMARY KEY autoincrement, Username, Password, Email, Certified BOOLEAN);]]
+( UserID INTEGER PRIMARY KEY autoincrement, Username, Password, House, Email, Certified BOOLEAN);]]
 db:exec( tableSetup )
 
 local Username
@@ -44,16 +89,17 @@ function loadData()
           FirstName = row.Username,
     			LastName = row.Password,
 					Email = row.Email,
-					Certified = row.Certified
+					Certified = row.Certified,
+          House = row.House
         }
     end
 
     return people
 end
 
-function insertData(Username, Password, Email, Certified)
-    local sql = [[INSERT into UserDB (UserID, Username, Password, Email, Certified) values
-		(NUll,']] .. Username .. [[',']] .. Password .. [[',']] .. Email .. [[',']] .. Certified .. [[')]]
+function insertData(Username, Password, House, Email, Certified)
+    local sql = [[INSERT into UserDB (UserID, Username, Password, House, Email, Certified) values
+		(NUll,']] .. Username .. [[',']] .. Password .. [[',']] .. House .. [[',']] .. Email .. [[',']] .. Certified .. [[')]]
     db:exec(sql)
 end
 
@@ -62,8 +108,8 @@ function deleteData(id)
     db:exec(sql)
 end
 
-function updateData(id, Info1, Info2)
-    local sql = [[UPDATE UserDB set ']].. Info1 .. [[' = ']] .. Info2 .. [[' where UserID = ']] .. id .. [[']]
+function updateData(id, Clue, Info1, Info2)
+    local sql = [[UPDATE UserDB set ']].. Info1 .. [[' = ']] .. Info2 .. [[' where ']] .. Clue .. [[' = ']] .. id .. [[']]
     db:exec(sql)
 end
 
@@ -87,14 +133,18 @@ end
 
 function Login(event)
 	if(event.phase == "began") then
+    --print("logging")
 		if (Username ~= nil and Password ~= nil) then
+      --print("logging")
 			local Correct = false
 			local people=loadData()
 			for i=1,#people do
 				print("Username:" .. people[i].FirstName .. "\nPassword:" .. people[i].LastName ..
-				"\nEmail:" .. people[i].Email .. "\nCertified:" .. people[i].Certified .. "\n\n\n")
+				"\nEmail:" .. people[i].Email .. "\nCertified:" .. people[i].Certified ..
+        "\nHouse:" .. people[i].House .. "\n\n\n")
 				if (Username==people[i].FirstName and Password==people[i].LastName) then
-					print("logging")
+					--print("loggingssadasda")
+          WriteFile(people[i].House,"Current.txt")
 					Correct=true
 					composer.gotoScene( "Home","fade",500 )
 				end

@@ -52,7 +52,7 @@ file = nil
 end
 
 
-function ReadFile(File)
+function ReadFile(File,K)
 local path = system.pathForFile( File, system.TemporaryDirectory )
 local file, errorString = io.open( path, "r" )
 local contents = {}
@@ -60,9 +60,13 @@ local contents = {}
 if not file then
     print( "File error: " .. errorString )
 else
+  if K == 1 then
   for line in file:lines() do
       print( line )
       contents[#contents+1] = line
+  end
+  else
+    contents = file:read( "*a" )
   end
   -- Close the file handle
   io.close( file )
@@ -100,7 +104,8 @@ function UploadStuff(event)
 end
 
 function Update()
-  local list = ReadFile("PhotoLogs.txt")
+  local PhotoLogs = "PhotoLogs" .. ReadFile("Current.txt",2) .. ".txt"
+  local list = ReadFile(PhotoLogs,1)
   local diff = MainView.height/2
   for i=1,#list do
     Download(list[i],list[i])
@@ -220,7 +225,7 @@ function scene:show( event )
 
 	if phase == "will" then
 		-- Called when the scene is still off screen and is about to move on screen
-    Download("PhotoLogs.txt","PhotoLogs.txt")
+    Download("PhotoLogs" .. ReadFile("Current.txt",2) .. ".txt","PhotoLogs" .. ReadFile("Current.txt",2) .. ".txt")
     Update()
 	elseif phase == "did" then
 		-- Called when the scene is now on screen

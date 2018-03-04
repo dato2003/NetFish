@@ -44,14 +44,15 @@ end
 
 
 function ReadFile(File)
-local path = system.pathForFile( File, system.DocumentsDirectory )
+local path = system.pathForFile( File, system.TemporaryDirectory )
 local file, errorString = io.open( path, "r" )
 local contents
 
 if not file then
     print( "File error: " .. errorString )
 else
-    contents = file:read( "*n" )
+    contents = file:read( "*a" )
+    --print(contents)
     io.close( file )
 end
 file = nil
@@ -96,7 +97,8 @@ function UploadImages(event)
             id = "photo" .. math.random(1,10000) .. ".png"
             Upload("photo.png",id)
             WriteFile(id .. "\n","TMP.txt")
-            Append("TMP.txt","PhotoLogs.txt")
+            K = "PhotoLogs" .. ReadFile("Current.txt") .. ".txt"
+            Append("TMP.txt",K)
         end
 
         if media.hasSource( media.PhotoLibrary ) then
