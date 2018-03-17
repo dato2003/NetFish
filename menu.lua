@@ -19,6 +19,10 @@ local DBconnection = ftp.newConnection{
         port = 21 -- Optional. Will default to 21.
 }
 --------------------------------------------
+local onError = function(event)
+        print("Error: " .. event.error)
+end
+
 function doesFileExist( fname)
     local results = false
     local filePath = system.pathForFile( fname, system.TemporaryDirectory )
