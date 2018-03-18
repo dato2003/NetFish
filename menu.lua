@@ -240,12 +240,12 @@ function scene:show( event )
 
 	if phase == "will" then
 		-- Called when the scene is still off screen and is about to move on screen
-			--[[DBconnection:download{
+			DBconnection:download{
         remoteFile = "/MyProjects/SocialNet/UserDB.db",
         localFile = "UserDB.db",
         onSuccess = onDownloadSuccess,
         onError = onError
-			}]]
+			}
 	elseif phase == "did" then
 		-- Called when the scene is now on screen
 		--
