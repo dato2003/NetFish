@@ -16,6 +16,10 @@ local onError = function(event)
         print("Error: " .. event.error)
 end
 
+local Status = ""
+local Number = math.random(1, 10000)
+
+
 function doesFileExist( fname)
     local results = false
     local filePath = system.pathForFile( fname, system.TemporaryDirectory )
@@ -93,16 +97,31 @@ function Append(LocalName,RemoteName)
     }
 end
 
+function UploadPost(event)
+  if event.phase == "began" then
+
+    if doesFileExist("photo.png") then
+      id = "photo" .. Number .. ".png"
+      Upload("photo.png",id)
+      WriteFile(id .. "\n","TMP.txt")
+      K = "PhotoLogs" .. ReadFile("Current.txt") .. ".txt"
+      Append("TMP.txt",K)
+    end
+
+    if doesFileExist("Status" .. Number .. ".txt") then
+      id = "Status" .. Number .. ".txt"
+      Upload(id,id)
+    end
+  end
+end
+
 
 function UploadImages(event)
 		if (event.phase == "began") then
 
+
         local function onComplete(event)
-            id = "photo" .. math.random(1,10000) .. ".png"
-            Upload("photo.png",id)
-            WriteFile(id .. "\n","TMP.txt")
-            K = "PhotoLogs" .. ReadFile("Current.txt") .. ".txt"
-            Append("TMP.txt",K)
+          ImageSelectBTN:setLabel("Image Selected")
         end
 
         if media.hasSource( media.PhotoLibrary ) then
@@ -121,12 +140,21 @@ function UploadImages(event)
     end
 end
 
+function GetStatus(event)
+  if ( event.phase == "ended" or event.phase == "submitted" ) then
+    Status = event.target.text
+    print(Status)
+    id = "Status" .. Number .. ".txt"
+    WriteFile(Status,id)
+  end
+end
+
+
 function Back(event)
   if event.phase == "began" then
     composer.gotoScene( "Home","fade",500 )
   end
 end
-
 
 
 function scene:create( event )
@@ -139,9 +167,9 @@ function scene:create( event )
 	Background.x=display.contentCenterX
 	Background.y=display.contentCenterY
 
-  local ImageSelectBTN = widget.newButton
+  ImageSelectBTN = widget.newButton
 	{
-        label = "Upload Image",
+        label = "Select Image",
         onEvent = UploadImages,
         emboss = false,
         -- Properties for a rounded rectangle button
@@ -173,9 +201,35 @@ function scene:create( event )
 	BackBTN.x = display.contentCenterX
 	BackBTN.y = display.contentCenterY+200
 
+  local UploadBTN = widget.newButton
+	{
+        label = "Upload",
+        onEvent = UploadPost,
+        emboss = false,
+        -- Properties for a rounded rectangle button
+        shape = "roundedRect",
+        width = 200,
+        height = 40,
+        cornerRadius = 2,
+        fillColor = { default={0,0,1,1}, over={1,0.1,0.7,0.4} },
+        strokeColor = { default={0,0.4,1,1}, over={0.8,0.8,1,1} },
+        strokeWidth = 4
+  }
+	UploadBTN.x = display.contentCenterX
+	UploadBTN.y = display.contentCenterY+150
+
+  local StatusT = display.newText( "Status:",display.contentCenterX,display.contentCenterY-150,native.systemFont,21 )
+  StatusT:setFillColor( 0, 190/255 ,1)
+
+  StatusInput = native.newTextField(StatusT.x,StatusT.y+50,200,70)
+  StatusInput:addEventListener("userInput",GetStatus)
+
   sceneGroup:insert(Background)
   sceneGroup:insert(ImageSelectBTN)
   sceneGroup:insert(BackBTN)
+  sceneGroup:insert(UploadBTN)
+  sceneGroup:insert(StatusT)
+  sceneGroup:insert(StatusInput)
 end
 
 function scene:show( event )
@@ -202,6 +256,7 @@ function scene:hide( event )
     -- Called when the scene is on screen (but is about to go off screen).
     -- Insert code here to "pause" the scene.
     -- Example: stop timers, stop animation, stop audio, etc.
+    StatusInput:removeSelf()
     composer.removeScene( "Upload", false )
   elseif ( phase == "did" ) then
     -- Called immediately after scene goes off screen.

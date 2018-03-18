@@ -66,7 +66,7 @@ if not file then
 else
   if K == 1 then
   for line in file:lines() do
-      print( line )
+      --print( line )
       if line ~= "\n" then
       contents[#contents+1] = line
       end
@@ -116,15 +116,26 @@ function Update()
   local diff = MainView.height/2
   --print(#list)
   for i=1,#list do
-    print(#list)
+    --print(#list)
     print(list[i])
     Download(list[i],list[i])
+    Number = tonumber(string.match(list[i], "%d+"))
+    print(Number)
+    local id = "Status" .. Number .. ".txt"
+    Download(id,id)
+    local StatusText = ReadFile(id,2)
+
+
     local image = display.newImageRect(list[i],system.TemporaryDirectory, MainView.width - 50, MainView.height )
     image.x = MainView.width/2
     image.y = diff
     image.isVisible = true
     MainView:insert(image)
-    diff = diff + MainView.height + 50
+
+    local Status = display.newText( StatusText,image.x,diff + MainView.height/2 + 50,MainView.width -50,0,native.systemFont,21 )
+    MainView:insert(Status)
+
+    diff = diff + MainView.height + 100
   end
 end
 
@@ -209,6 +220,7 @@ function scene:create( event )
     y = screenH*0.5,
     width = screenW*0.9,
     height = screenH*0.7,
+    topPadding = 20,
     backgroundColor = { 0.8, 0.8, 0.8 },
     horizontalScrollDisabled = true,
     listener = scrollListener
