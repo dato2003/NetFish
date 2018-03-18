@@ -16,6 +16,9 @@ local onError = function(event)
         print("Error: " .. event.error)
 end
 
+local Status
+
+
 function doesFileExist( fname)
     local results = false
     local filePath = system.pathForFile( fname, system.TemporaryDirectory )
@@ -97,15 +100,17 @@ end
 function UploadImages(event)
 		if (event.phase == "began") then
 
-      if doesFileExist("photo.png") then
+
         local function onComplete(event)
+          if doesFileExist("photo.png") then
             id = "photo" .. math.random(1,10000) .. ".png"
             Upload("photo.png",id)
             WriteFile(id .. "\n","TMP.txt")
             K = "PhotoLogs" .. ReadFile("Current.txt") .. ".txt"
             Append("TMP.txt",K)
+          end
         end
-      end
+
         if media.hasSource( media.PhotoLibrary ) then
             media.selectPhoto(
                 {
@@ -122,12 +127,19 @@ function UploadImages(event)
     end
 end
 
+function GetStatus(event)
+  if ( event.phase == "ended" or event.phase == "submitted" ) then
+    Status = event.target.text
+    print(Status)
+  end
+end
+
+
 function Back(event)
   if event.phase == "began" then
     composer.gotoScene( "Home","fade",500 )
   end
 end
-
 
 
 function scene:create( event )
@@ -174,9 +186,17 @@ function scene:create( event )
 	BackBTN.x = display.contentCenterX
 	BackBTN.y = display.contentCenterY+200
 
+  local StatusT = display.newText( "Status:",display.contentCenterX,display.contentCenterY-150,native.systemFont,21 )
+  StatusT:setFillColor( 0, 190/255 ,1)
+
+  local StatusInput = native.newTextField(StatusT.x,StatusT.y+50,200,70)
+  StatusInput:addEventListener("userInput",GetStatus)
+
   sceneGroup:insert(Background)
   sceneGroup:insert(ImageSelectBTN)
   sceneGroup:insert(BackBTN)
+  sceneGroup:insert(StatusT)
+  sceneGroup:insert(StatusInput)
 end
 
 function scene:show( event )
