@@ -132,7 +132,7 @@ function Update()
     image.isVisible = true
     MainView:insert(image)
 
-    local Status = display.newText( StatusText,image.x,diff + MainView.height/2 + 50,native.systemFont,21 )
+    local Status = display.newText( StatusText,image.x,diff + MainView.height/2 + 50,MainView.width -50,0,native.systemFont,21 )
     MainView:insert(Status)
 
     diff = diff + MainView.height + 100
