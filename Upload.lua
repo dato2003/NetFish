@@ -97,6 +97,7 @@ end
 function UploadImages(event)
 		if (event.phase == "began") then
 
+      if doesFileExist("photo.png") then
         local function onComplete(event)
             id = "photo" .. math.random(1,10000) .. ".png"
             Upload("photo.png",id)
@@ -104,7 +105,7 @@ function UploadImages(event)
             K = "PhotoLogs" .. ReadFile("Current.txt") .. ".txt"
             Append("TMP.txt",K)
         end
-
+      end
         if media.hasSource( media.PhotoLibrary ) then
             media.selectPhoto(
                 {
