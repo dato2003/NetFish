@@ -122,7 +122,7 @@ function UsernameHandler(event)
 
     elseif ( event.phase == "ended" or event.phase == "submitted" ) then
 		Username = event.target.text
-		--print(Username)
+		print(Username)
 	end
 end
 
@@ -131,7 +131,7 @@ function PasswordHandler(event)
 
     elseif ( event.phase == "ended" or event.phase == "submitted" ) then
 		Password = event.target.text
-		--print(Password)
+		print(Password)
 	end
 end
 
@@ -240,12 +240,12 @@ function scene:show( event )
 
 	if phase == "will" then
 		-- Called when the scene is still off screen and is about to move on screen
-			DBconnection:download{
+			--[[DBconnection:download{
         remoteFile = "/MyProjects/SocialNet/UserDB.db",
         localFile = "UserDB.db",
         onSuccess = onDownloadSuccess,
         onError = onError
-			}
+			}]]
 	elseif phase == "did" then
 		-- Called when the scene is now on screen
 		--
