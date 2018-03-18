@@ -132,11 +132,13 @@ function Update()
     image.isVisible = true
     MainView:insert(image)
 
-    local Status = display.newText( StatusText,image.x,diff + MainView.height/2 + 50,MainView.width -50,0,native.systemFont,21 )
+    local Status = display.newText( StatusText,image.x,diff + MainView.height/2 + 50,MainView.width -50,0,native.systemFont,30 )
+    Status:setFillColor(123/255,128/255,255/255)
     MainView:insert(Status)
 
     diff = diff + MainView.height + 100
   end
+  LoadProgress.text = ""
 end
 
 function Refresh(event)
@@ -228,16 +230,16 @@ function scene:create( event )
   MainView.x = display.contentCenterX
   MainView.y = display.contentCenterY-30
 
-  -------------------------------------- MAIN VIEW STUFF --------------------------------------
+  LoadProgress = display.newText( "Loading",display.contentCenterX-100,display.contentCenterY-250,native.systemFont,28 )
+  LoadProgress:setFillColor( 0, 190/255 ,1)
 
-
-  -------------------------------------- MAIN VIEW STUFF --------------------------------------
 
 	sceneGroup:insert(Background)
 	sceneGroup:insert(UploadBTN)
 	sceneGroup:insert(MainView)
   sceneGroup:insert(RefreshBTN)
   sceneGroup:insert(BackBTN)
+  sceneGroup:insert(LoadProgress)
 end
 
 

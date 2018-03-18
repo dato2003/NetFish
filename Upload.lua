@@ -99,7 +99,6 @@ end
 
 function UploadPost(event)
   if event.phase == "began" then
-
     if doesFileExist("photo.png") then
       id = "photo" .. Number .. ".png"
       Upload("photo.png",id)
@@ -112,6 +111,8 @@ function UploadPost(event)
       id = "Status" .. Number .. ".txt"
       Upload(id,id)
     end
+
+    composer.gotoScene( "Home","fade",500 )
   end
 end
 
@@ -224,12 +225,17 @@ function scene:create( event )
   StatusInput = native.newTextField(StatusT.x,StatusT.y+50,200,70)
   StatusInput:addEventListener("userInput",GetStatus)
 
+  Progress = display.newText( "When Done You will go back to Home",display.contentCenterX,display.contentCenterY,
+  display.actualContentWidth,0,native.systemFont,28 )
+  Progress:setFillColor( 0, 190/255 ,1)
+
   sceneGroup:insert(Background)
   sceneGroup:insert(ImageSelectBTN)
   sceneGroup:insert(BackBTN)
   sceneGroup:insert(UploadBTN)
   sceneGroup:insert(StatusT)
   sceneGroup:insert(StatusInput)
+  sceneGroup:insert(Progress)
 end
 
 function scene:show( event )
