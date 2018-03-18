@@ -176,13 +176,13 @@ function scene:create( event )
 	local LogoScreen = display.newText("NetFish",display.contentCenterX,display.contentCenterY-200,native.systemFont,40)
 	LogoScreen:setFillColor( 0, 190/255, 1 )
 
-	UsernameInput = display.newText("Username:",display.contentCenterX-90,display.contentCenterY-100,native.systemFont,30)
+	UsernameInput = display.newText("Username:",display.contentCenterX-80,display.contentCenterY-100,native.systemFont,30)
 	UsernameInput:setFillColor( 0, 190/255 ,1)
 
 	UsernameText = native.newTextField(UsernameInput.x+150,UsernameInput.y,150,30)
 	UsernameText:addEventListener("userInput",UsernameHandler)
 
-	PasswordInput = display.newText("Password:",display.contentCenterX-90,display.contentCenterY-50,native.systemFont,30)
+	PasswordInput = display.newText("Password:",display.contentCenterX-80,display.contentCenterY-50,native.systemFont,30)
 	PasswordInput:setFillColor( 0, 190/255 ,1)
 
 	PasswordText = native.newTextField(PasswordInput.x+150,PasswordInput.y,150,30)
