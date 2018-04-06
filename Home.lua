@@ -187,7 +187,7 @@ function scene:create( event )
 
   local BackBTN = widget.newButton
 	{
-        label = "Log out",
+        label = "Back",
         onEvent = Logout,
         emboss = false,
         -- Properties for a rounded rectangle button

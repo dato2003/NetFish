@@ -151,7 +151,7 @@ function Login(event)
 					--print("loggingssadasda")
           WriteFile(people[i].House,"Current.txt")
 					Correct=true
-					composer.gotoScene( "Home","fade",500 )
+					composer.gotoScene( "Navigator","fade",500 )
 				end
 			end
 			if (Correct==false) then
