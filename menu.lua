@@ -150,6 +150,7 @@ function Login(event)
 				if (Username==people[i].FirstName and Password==people[i].LastName) then
 					--print("loggingssadasda")
           WriteFile(people[i].House,"Current.txt")
+          WriteFile(people[i].FirstName,"CurrentDude.txt")
 					Correct=true
 					composer.gotoScene( "Navigator","fade",500 )
 				end
