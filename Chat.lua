@@ -113,6 +113,11 @@ function connect()
             --textout(message.msgtext)
         end,
         error = function(message)
+          local Status = display.newText(message.msgtext, MainView.width/2 , diff , Font , 20)
+          Status:setFillColor(123/255,128/255,255/255)
+          MainView:insert(Status)
+
+          diff = diff + 30
             --textout(message or "Connection Error")
         end
     })

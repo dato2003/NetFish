@@ -13,8 +13,10 @@ local DBconnection = ftp.newConnection{
 }
 --------------------------------------------
 local onError = function(event)
-        print("Error: " .. event.error)
+  print("Error: " .. event.error)
+  local alert = native.showAlert( "NetFish", "Error: " .. event.error , { "OK" })
 end
+
 
 function doesFileExist( fname)
     local results = false

@@ -13,8 +13,10 @@ local DBconnection = ftp.newConnection{
 }
 --------------------------------------------------------------------------------
 local onError = function(event)
-        print("Error: " .. event.error)
+  print("Error: " .. event.error)
+  local alert = native.showAlert( "NetFish", "Error: " .. event.error , { "OK" })
 end
+
 
 local Status = ""
 local Number = math.random(1, 10000)

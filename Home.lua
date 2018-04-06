@@ -19,8 +19,10 @@ local DBconnection = ftp.newConnection{
 }
 --------------------------------------------
 local onError = function(event)
-        print("Error: " .. event.error)
+  print("Error: " .. event.error)
+  local alert = native.showAlert( "NetFish", "Error: " .. event.error , { "OK" })
 end
+
 
 local screenW, screenH, halfW = display.actualContentWidth, display.actualContentHeight, display.contentCenterX
 local Font = native.newFont( "Marlboro.ttf" , 35 )
