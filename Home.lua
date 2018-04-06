@@ -154,7 +154,7 @@ end
 
 function Logout(event)
   if event.phase == "began" then
-    composer.gotoScene( "menu","fade",500 )
+    composer.gotoScene( "Navigator","fade",500 )
   end
 end
 function scene:create( event )
