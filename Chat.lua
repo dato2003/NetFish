@@ -65,7 +65,7 @@ return contents
 end
 
 local Font = native.newFont( "Marlboro.ttf" , 35 )
-
+local me = ReadFile("CurrentDude.txt")
 
 local textout = PubnubUtil.textout
 
@@ -73,7 +73,7 @@ chat = pubnub.new({
     publish_key   = "pub-c-6a5d691f-c294-4ac1-89d9-931d19888100",
     subscribe_key = "sub-c-d34f9db2-39a0-11e8-afae-2a65d00afee8",
     secret_key    = "sec-c-ZmU2ZTc2MDYtYzUwNS00ZWRlLWE1YTgtNjA0ODdkNzMxYTZh",
-    ssl           = nil,
+    ssl           = true,
     origin        = "pubsub.pubnub.com"
 })
 
@@ -84,31 +84,89 @@ function listener(event)
 
   -- Don't send Empyt Message
   if chatbox.text == '' then return end
-
-  send_a_message(tostring(chatbox.text))
+  local msg = me .. ":" .. chatbox.text
+  send_a_message(tostring(msg))
   chatbox.text = ''
   native.setKeyboardFocus(nil)
 end
 
 CHAT_CHANNEL = ReadFile("Current.txt")
-print(CHAT_CHANNEL)
+
+function connect()
+    chat:subscribe({
+        channel  = CHAT_CHANNEL,
+        connect  = function()
+            textout('Connected!')
+        end,
+        callback = function(message)
+            textout(message.msgtext)
+        end,
+        error = function(message)
+            textout(message or "Connection Error")
+        end
+    })
+end
+
+--
+-- A FUNCTION THAT WILL CLOSE NETWORK A CONNECTION TO PUBNUB
+--
+function disconnect()
+    chat:unsubscribe({
+        channel = CHAT_CHANNEL
+    })
+    textout('Disconnected!')
+end
+
+--
+-- A FUNCTION THAT WILL SEND A MESSAGE
+--
+function send_a_message(text)
+    chat:publish({
+        channel  = CHAT_CHANNEL,
+        message  = { msgtext = text },
+        callback = function(info)
+        end
+    })
+end
+
+function BackFunc(event)
+
+end
 
 function scene:create( event )
   local sceneGroup = self.view
 
   -- Initialize the scene here.
   -- Example: add display objects to "sceneGroup", add touch listeners, etc.
+  local Background = display.newRect( display.contentCenterX, display.contentCenterY,
+   display.actualContentWidth, display.actualContentHeight )
+  Background:setFillColor(107/255,111/255,112/255)
 
-  local Background = display.newImageRect("Background.jpg",display.actualContentWidth,display.actualContentHeight)
-	Background.x=display.contentCenterX
-	Background.y=display.contentCenterY
 
   chatbox = native.newTextField( display.contentCenterX, display.contentCenterY+200, display.actualContentWidth - 20, 36)
   chatbox:addEventListener("userInput",listener)
 
+  Back = widget.newButton
+  {
+    label = "Back",
+    onEvent = BackFunc,
+    emboss = false,
+    -- Properties for a rounded rectangle button
+    shape = "roundedRect",
+    width = 200,
+    height = 40,
+    cornerRadius = 2,
+    fillColor = { default={0,0,1,1}, over={1,0.1,0.7,0.4} },
+    strokeColor = { default={0,0.4,1,1}, over={0.8,0.8,1,1} },
+    strokeWidth = 4
+  }
+  Back.x = display.contentCenterX
+  Back.y = display.contentCenterY+250
+
 
   sceneGroup:insert(Background)
   sceneGroup:insert(chatbox)
+  sceneGroup:insert(Back)
 end
 
 function scene:show( event )
@@ -121,6 +179,7 @@ function scene:show( event )
     -- Called when the scene is now on screen.
     -- Insert code here to make the scene come alive.
     -- Example: start timers, begin animation, play audio, etc.
+    connect()
   end
 end
 
