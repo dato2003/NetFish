@@ -66,8 +66,9 @@ end
 
 local Font = native.newFont( "Marlboro.ttf" , 35 )
 local me = ReadFile("CurrentDude.txt")
-
+local screenW, screenH, halfW = display.actualContentWidth, display.actualContentHeight, display.contentCenterX
 local textout = PubnubUtil.textout
+local diff = 0
 
 chat = pubnub.new({
     publish_key   = "pub-c-6a5d691f-c294-4ac1-89d9-931d19888100",
@@ -96,13 +97,23 @@ function connect()
     chat:subscribe({
         channel  = CHAT_CHANNEL,
         connect  = function()
-            textout('Connected!')
+          local Status = display.newText("Connected!", MainView.width/2 , 0 , Font , 20)
+          Status:setFillColor(123/255,128/255,255/255)
+          MainView:insert(Status)
+
+          diff = diff + 30
+            --textout('Connected!')
         end,
         callback = function(message)
-            textout(message.msgtext)
+          local Status = display.newText(message.msgtext, MainView.width/2 , diff , Font , 20)
+          Status:setFillColor(123/255,128/255,255/255)
+          MainView:insert(Status)
+
+          diff = diff + 30
+            --textout(message.msgtext)
         end,
         error = function(message)
-            textout(message or "Connection Error")
+            --textout(message or "Connection Error")
         end
     })
 end
@@ -114,7 +125,7 @@ function disconnect()
     chat:unsubscribe({
         channel = CHAT_CHANNEL
     })
-    textout('Disconnected!')
+    --textout('Disconnected!')
 end
 
 --
@@ -130,7 +141,9 @@ function send_a_message(text)
 end
 
 function BackFunc(event)
-
+  if (event.phase == "ended") then
+    composer.gotoScene( "Navigator","fade",500 )
+  end
 end
 
 function scene:create( event )
@@ -163,10 +176,25 @@ function scene:create( event )
   Back.x = display.contentCenterX
   Back.y = display.contentCenterY+250
 
+  MainView = widget.newScrollView
+  {
+    x = screenW*0.5,
+    y = screenH*0.5,
+    width = screenW*0.9,
+    height = screenH*0.7,
+    topPadding = 20,
+    backgroundColor = { 0.8, 0.8, 0.8 },
+    horizontalScrollDisabled = true,
+    listener = scrollListener
+  }
+  MainView.x = display.contentCenterX
+  MainView.y = display.contentCenterY-30
+
 
   sceneGroup:insert(Background)
   sceneGroup:insert(chatbox)
   sceneGroup:insert(Back)
+  sceneGroup:insert(MainView)
 end
 
 function scene:show( event )
@@ -192,8 +220,10 @@ function scene:hide( event )
     -- Called when the scene is on screen (but is about to go off screen).
     -- Insert code here to "pause" the scene.
     -- Example: stop timers, stop animation, stop audio, etc.
+    disconnect()
   elseif ( phase == "did" ) then
     -- Called immediately after scene goes off screen.
+    composer.removeScene( "Chat", false )
   end
 end
 
