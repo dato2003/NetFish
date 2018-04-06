@@ -77,6 +77,7 @@ local EmailText
 local EmailInput
 local HouseText
 local HouseInput
+local Font = native.newFont( "Marlboro.ttf" , 35 )
 
 
 function loadData()
@@ -195,33 +196,36 @@ end
 function scene:create( event )
   local sceneGroup = self.view
 
-  local LogoScreen = display.newText("NetFish",display.contentCenterX,display.contentCenterY-230,native.systemFont,70)
+  local LogoScreen = display.newText("NetFish",display.contentCenterX,display.contentCenterY-230,Font,70)
 	LogoScreen:setFillColor( 0, 190/255, 1 )
 
   local Background = display.newImageRect("Background.jpg",display.actualContentWidth,display.actualContentHeight)
   Background.x=display.contentCenterX
 	Background.y=display.contentCenterY
 
-  UsernameInput = display.newText("Username:",display.contentCenterX-90,display.contentCenterY-150,native.systemFont,30)
+  UsernameInput = display.newText("Username:",display.contentCenterX-90,display.contentCenterY-150,Font,30)
 	UsernameInput:setFillColor( 0, 190/255 ,1)
 
 	UsernameText = native.newTextField(UsernameInput.x+150,UsernameInput.y,150,30)
 	UsernameText:addEventListener("userInput",UsernameHandler)
+  UsernameText.font = Font
 
-	PasswordInput = display.newText("Password:",display.contentCenterX-90,display.contentCenterY-100,native.systemFont,30)
+	PasswordInput = display.newText("Password:",display.contentCenterX-90,display.contentCenterY-100,Font,30)
 	PasswordInput:setFillColor( 0, 190/255 ,1)
 
 	PasswordText = native.newTextField(PasswordInput.x+150,PasswordInput.y,150,30)
 	PasswordText:addEventListener("userInput",PasswordHandler)
 	PasswordText.isSecure=true
+  PasswordText.font = Font
 
-  EmailInput = display.newText("Email:",display.contentCenterX-90,display.contentCenterY-50,native.systemFont,30)
+  EmailInput = display.newText("Email:",display.contentCenterX-90,display.contentCenterY-50,Font,30)
 	EmailInput:setFillColor( 0, 190/255 ,1)
 
 	EmailText = native.newTextField(EmailInput.x+150,EmailInput.y,150,30)
 	EmailText:addEventListener("userInput",EmailHandler)
+  EmailText.font = Font
 
-  HouseInput = display.newText("House:",display.contentCenterX-90,display.contentCenterY+50,native.systemFont,30)
+  HouseInput = display.newText("House:",display.contentCenterX-90,display.contentCenterY+50,Font,30)
 	HouseInput:setFillColor( 0, 190/255 ,1)
 
 

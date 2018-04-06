@@ -23,7 +23,7 @@ local onError = function(event)
 end
 
 local screenW, screenH, halfW = display.actualContentWidth, display.actualContentHeight, display.contentCenterX
-
+local Font = native.newFont( "Marlboro.ttf" , 35 )
 
 function doesFileExist( fname)
     local results = false
@@ -132,7 +132,7 @@ function Update()
     image.isVisible = true
     MainView:insert(image)
 
-    local Status = display.newText( StatusText,image.x,diff + MainView.height/2 + 50,MainView.width -50,0,native.systemFont,30 )
+    local Status = display.newText( StatusText,image.x,diff + MainView.height/2 + 50,MainView.width -50,0,Font,30 )
     Status:setFillColor(123/255,128/255,255/255)
     MainView:insert(Status)
 

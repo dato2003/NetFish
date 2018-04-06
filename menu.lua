@@ -82,6 +82,7 @@ local UsernameText
 local UsernameInput
 local PasswordText
 local PasswordInput
+local Font = native.newFont( "Marlboro.ttf" , 35 )
 
 function loadData()
     local sql = "select * from UserDB"
@@ -173,21 +174,23 @@ function scene:create( event )
 	Background.x=display.contentCenterX
 	Background.y=display.contentCenterY
 
-	local LogoScreen = display.newText("NetFish",display.contentCenterX,display.contentCenterY-200,native.systemFont,40)
+	local LogoScreen = display.newText("NetFish",display.contentCenterX,display.contentCenterY-200,Font,40)
 	LogoScreen:setFillColor( 0, 190/255, 1 )
 
-	UsernameInput = display.newText("Username:",display.contentCenterX-80,display.contentCenterY-100,native.systemFont,30)
+	UsernameInput = display.newText("Username:",display.contentCenterX-80,display.contentCenterY-100,Font,30)
 	UsernameInput:setFillColor( 0, 190/255 ,1)
 
 	UsernameText = native.newTextField(UsernameInput.x+150,UsernameInput.y,150,30)
 	UsernameText:addEventListener("userInput",UsernameHandler)
+  UsernameText.font = Font
 
-	PasswordInput = display.newText("Password:",display.contentCenterX-80,display.contentCenterY-50,native.systemFont,30)
+	PasswordInput = display.newText("Password:",display.contentCenterX-80,display.contentCenterY-50,Font,30)
 	PasswordInput:setFillColor( 0, 190/255 ,1)
 
 	PasswordText = native.newTextField(PasswordInput.x+150,PasswordInput.y,150,30)
 	PasswordText:addEventListener("userInput",PasswordHandler)
 	PasswordText.isSecure=true
+  PasswordText.font = Font
 
 	local LoginBTN = widget.newButton
 	{
