@@ -138,12 +138,14 @@ function Update()
 
     diff = diff + MainView.height + 100
   end
-  LoadProgress.text = ""
+  LoadProgress.isVisible = false
 end
 
 function Refresh(event)
   if event.phase == "began" then
     Download("PhotoLogs" .. ReadFile("Current.txt",2) .. ".txt","PhotoLogs" .. ReadFile("Current.txt",2) .. ".txt")
+    print("logging")
+    LoadProgress.isVisible = true
     Update()
   end
 end
