@@ -140,16 +140,14 @@ function Update()
 end
 
 function Prep()
-  print("das")
   Download("PhotoLogs" .. ReadFile("Current.txt",2) .. ".txt","PhotoLogs" .. ReadFile("Current.txt",2) .. ".txt")
   Update()
 end
 
 function Refresh(event)
   if event.phase == "began" then
-    print("logging")
     LoadProgress.isVisible = true
-    timer.performWithDelay( 1000, Prep )
+    timer.performWithDelay( 100, Prep )
   end
 end
 
