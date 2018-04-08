@@ -149,6 +149,12 @@ function UpdatePas(event)
 	end
 end
 
+function BackFunc(event)
+  if (event.phase == "ended") then
+    composer.gotoScene( "Navigator","fade",500 )
+  end
+end
+
 function scene:create( event )
   local sceneGroup = self.view
 
@@ -195,6 +201,22 @@ function scene:create( event )
 	UpdateBTN.x = display.contentCenterX
 	UpdateBTN.y = display.contentCenterY+150
 
+  local BackBTN = widget.newButton
+	{
+        label = "Back",
+        onEvent = BackFunc,
+        emboss = false,
+        -- Properties for a rounded rectangle button
+        shape = "roundedRect",
+        width = 200,
+        height = 40,
+        cornerRadius = 2,
+        fillColor = { default={0,0,1,1}, over={1,0.1,0.7,0.4} },
+        strokeColor = { default={0,0.4,1,1}, over={0.8,0.8,1,1} },
+        strokeWidth = 4
+  }
+	BackBTN.x = display.contentCenterX
+	BackBTN.y = display.contentCenterY+200
 
 
   sceneGroup:insert(Background)
@@ -203,6 +225,8 @@ function scene:create( event )
   sceneGroup:insert(PassText1)
   sceneGroup:insert(PasswordText2)
   sceneGroup:insert(PassText2)
+  sceneGroup:insert(UpdateBTN)
+  sceneGroup:insert(BackBTN)
 end
 
 --------------------------------------------------------------------------------
@@ -217,7 +241,7 @@ function scene:show( event )
   elseif ( phase == "did" ) then
     -- Called when the scene is now on screen.
     -- Insert code here to make the scene come alive.
-    -- Example: start timers, begin animation, play audio, etc.
+    -- Example: start timers, begin animation, play audio, etc
   end
 end
 
@@ -232,6 +256,9 @@ function scene:hide( event )
     -- Called when the scene is on screen (but is about to go off screen).
     -- Insert code here to "pause" the scene.
     -- Example: stop timers, stop animation, stop audio, etc.
+    PassText1:removeSelf()
+    PassText2:removeSelf()
+    composer.removeScene( "infoChange", false )
   elseif ( phase == "did" ) then
     -- Called immediately after scene goes off screen.
   end
