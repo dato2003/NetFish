@@ -105,11 +105,24 @@ function connect()
             --textout('Connected!')
         end,
         callback = function(message)
-          local Status = display.newText(message.msgtext, MainView.width/2 , diff , Font , 20)
+          local x = 19
+          if string.len( message.msgtext ) > 40 then
+            x = 17
+            print(string.len( message.msgtext ))
+          end
+          local Status = display.newText(message.msgtext, MainView.width/2 , diff , MainView.width - 20 , 0 , Font , x,"left")
           Status:setFillColor(123/255,128/255,255/255)
           MainView:insert(Status)
 
-          diff = diff + 30
+          diff = diff + 35
+          print(diff .. " " .. MainView.height)
+
+          local function onScrollComplete()
+              print( "Scroll complete!" )
+          end
+          if diff >= MainView.height then
+            MainView:scrollTo("bottom",{onComplete = onScrollComplete})
+          end
             --textout(message.msgtext)
         end,
         error = function(message)

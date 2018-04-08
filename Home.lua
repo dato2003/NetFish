@@ -83,10 +83,6 @@ file = nil
 return contents
 end
 
-local onError = function(event)
-        print("Error: " .. event.error)
-end
-
 function Upload(LocalName,RemoteName)
     DBconnection:upload{
       localFile = system.pathForFile(LocalName, system.TemporaryDirectory),
