@@ -105,6 +105,7 @@ function connect()
             --textout('Connected!')
         end,
         callback = function(message)
+          ---------------------------------------------------------------------
           local x = 19
           if string.len( message.msgtext ) > 40 then
             x = 17
@@ -123,7 +124,7 @@ function connect()
           if diff >= MainView.height then
             MainView:scrollTo("bottom",{onComplete = onScrollComplete})
           end
-            --textout(message.msgtext)
+          ---------------------------------------------------------------------
         end,
         error = function(message)
           local Status = display.newText(message.msgtext, MainView.width/2 , diff , Font , 20)
