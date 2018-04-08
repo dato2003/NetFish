@@ -170,7 +170,7 @@ function scene:create( event )
   PassText1.font = Font
   PassText1.isSecure = true
 
-  PasswordText2 = display.newText("New Password:",display.contentCenterX-80,display.contentCenterY,Font,30)
+  PasswordText2 = display.newText("New Password:",display.contentCenterX-80,display.contentCenterY-50,Font,30)
 	PasswordText2:setFillColor( 0, 190/255 ,1)
 
   PassText2 = native.newTextField(PasswordText2.x+150,PasswordText2.y,150,30)

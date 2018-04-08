@@ -34,6 +34,13 @@ function ChatFunc(event)
   end
 end
 
+function PassFunc(event)
+  if (event.phase == "ended") then
+    composer.gotoScene( "infoChange","fade",500 )
+  end
+end
+
+
 function scene:create( event )
   local sceneGroup = self.view
 
@@ -101,11 +108,30 @@ function scene:create( event )
   Chat.x = display.contentCenterX
   Chat.y = display.contentCenterY-50
 
+  local PasswordChange = widget.newButton
+  {
+    label = "Change Password",
+    onEvent = PassFunc,
+    emboss = false,
+    -- Properties for a rounded rectangle button
+    shape = "roundedRect",
+    width = 200,
+    height = 40,
+    cornerRadius = 2,
+    fillColor = { default={0,0,1,1}, over={1,0.1,0.7,0.4} },
+    strokeColor = { default={0,0.4,1,1}, over={0.8,0.8,1,1} },
+    strokeWidth = 4
+  }
+  PasswordChange.x = display.contentCenterX
+  PasswordChange.y = display.contentCenterY
+
+
   sceneGroup:insert(Background)
   sceneGroup:insert(LogoScreen)
   sceneGroup:insert(PostsPage)
   sceneGroup:insert(Logout)
   sceneGroup:insert(Chat)
+  sceneGroup:insert(PasswordChange)
 end
 
 function scene:show( event )
