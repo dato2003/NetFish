@@ -79,16 +79,21 @@ chat = pubnub.new({
 })
 
 function listener(event)
+  if (event.phase == "began") then
+    native.setKeyboardFocus( chatbox )
+    event.target.y = display.contentCenterY+80
+  end
   if not (event.phase == "ended" or event.phase == "submitted") then
       return
   end
 
   -- Don't send Empyt Message
-  if chatbox.text == '' then return end
+  --if chatbox.text == '' then  event.target.y = display.contentCenterY+200 return end
   local msg = me .. ":" .. chatbox.text
   send_a_message(tostring(msg))
   chatbox.text = ''
   native.setKeyboardFocus(nil)
+  event.target.y = display.contentCenterY+200
 end
 
 CHAT_CHANNEL = ReadFile("Current.txt")
@@ -151,12 +156,32 @@ end
 -- A FUNCTION THAT WILL SEND A MESSAGE
 --
 function send_a_message(text)
+    if text ~= me .. ":" then
     chat:publish({
         channel  = CHAT_CHANNEL,
         message  = { msgtext = text },
         callback = function(info)
         end
     })
+  end
+end
+
+
+function onKeyEvent( event )
+
+    -- If the "back" key was pressed on Android, prevent it from backing out of the app
+    if ( event.keyName == "back" ) then
+        if ( system.getInfo("platform") == "android" ) then
+            chatbox.text = ''
+            chatbox.y = display.contentCenterY+200
+            native.setKeyboardFocus( nil )
+            return true
+        end
+    end
+
+    -- IMPORTANT! Return false to indicate that this app is NOT overriding the received key
+    -- This lets the operating system execute its default handling of the key
+    --return false
 end
 
 function BackFunc(event)
@@ -265,5 +290,8 @@ scene:addEventListener( "show", scene )
 scene:addEventListener( "hide", scene )
 scene:addEventListener( "destroy", scene )
 --------------------------------------------------------------------------------
+-- Add the key event listener
+Runtime:addEventListener( "key", onKeyEvent )
+
 
 return scene
