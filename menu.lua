@@ -21,7 +21,8 @@ local DBconnection = ftp.newConnection{
 --------------------------------------------
 local onError = function(event)
   print("Error: " .. event.error)
-  local alert = native.showAlert( "NetFish (Check Internet)", "Error: " .. event.error , { "OK" })  
+  local alert = native.showAlert( "NetFish (Check Internet)", "Error: " .. event.error , { "OK" })
+  LoadProgress.isVisible = false
 end
 
 function doesFileExist( fname)
@@ -137,6 +138,10 @@ function PasswordHandler(event)
 	end
 end
 
+function onDownloadSuccess()
+  LoadProgress.isVisible = false
+end
+
 function Login(event)
 	if(event.phase == "began") then
     --print("logging")
@@ -228,6 +233,9 @@ function scene:create( event )
 	RegisterBTN.x = display.contentCenterX
 	RegisterBTN.y = display.contentCenterY+200
 
+  LoadProgress = display.newText("Loading...",display.contentCenterX,display.contentCenterY,Font,40)
+	LoadProgress:setFillColor( 0, 190/255, 1 )
+
 
 	sceneGroup:insert(Background)
 	sceneGroup:insert(LogoScreen)
@@ -237,6 +245,7 @@ function scene:create( event )
 	sceneGroup:insert(PasswordText)
 	sceneGroup:insert(LoginBTN)
 	sceneGroup:insert(RegisterBTN)
+  sceneGroup:insert(LoadProgress)
 end
 
 function scene:show( event )
