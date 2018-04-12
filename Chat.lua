@@ -171,7 +171,7 @@ function onKeyEvent( event )
 
     -- If the "back" key was pressed on Android, prevent it from backing out of the app
     if ( event.keyName == "back" ) then
-        if ( system.getInfo("platform") == "androd" or system.getInfo("platform") == "iphone") then
+        if ( system.getInfo("platform") == "androd" or system.getInfo("platform") == "ios") then
             chatbox.text = ''
             chatbox.y = display.contentCenterY+200
             native.setKeyboardFocus( nil )

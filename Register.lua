@@ -142,30 +142,42 @@ end
 
 function UsernameHandler(event)
 	if ( event.phase == "began" ) then
+    if ( system.getInfo("platform") == "androd" or system.getInfo("platform") == "ios") then
     native.setKeyboardFocus( UsernameText )
+    end
   elseif ( event.phase == "ended" or event.phase == "submitted" ) then
 		Username = event.target.text
+    if ( system.getInfo("platform") == "androd" or system.getInfo("platform") == "ios") then
     native.setKeyboardFocus( nil )
+    end
 		--print(Username)
 	end
 end
 
 function PasswordHandler(event)
 	if ( event.phase == "began" ) then
+    if ( system.getInfo("platform") == "androd" or system.getInfo("platform") == "ios") then
     native.setKeyboardFocus( PasswordText )
+    end
   elseif ( event.phase == "ended" or event.phase == "submitted" ) then
 		Password = event.target.text
+    if ( system.getInfo("platform") == "androd" or system.getInfo("platform") == "ios") then
     native.setKeyboardFocus( nil )
+    end
 		--print(Password)
 	end
 end
 
 function EmailHandler(event)
 	if ( event.phase == "began" ) then
+    if ( system.getInfo("platform") == "androd" or system.getInfo("platform") == "ios") then
     native.setKeyboardFocus( EmailText )
+    end
   elseif ( event.phase == "ended" or event.phase == "submitted" ) then
 		Email = event.target.text
+    if ( system.getInfo("platform") == "androd" or system.getInfo("platform") == "ios") then
     native.setKeyboardFocus( nil )
+    end
 		--print(Password)
 	end
 end
@@ -182,7 +194,7 @@ function GetHouse(event)
   if event.row == 5 then
     House = "School_House"
   end
-  print("House:" .. House)
+  --print("House:" .. House)
 end
 
 function RegisterFunc(event)

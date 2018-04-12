@@ -121,21 +121,33 @@ function updateData(id, Clue, Info1, Info2)
 end
 
 function UsernameHandler(event)
-	if ( event.phase == "began" ) then
+	  if ( event.phase == "began" ) then
+
+    if ( system.getInfo("platform") == "androd" or system.getInfo("platform") == "ios") then
     native.setKeyboardFocus( UsernameText )
+    end
+
     elseif ( event.phase == "ended" or event.phase == "submitted" ) then
 		Username = event.target.text
+
+    if ( system.getInfo("platform") == "androd" or system.getInfo("platform") == "ios") then
     native.setKeyboardFocus( nil )
-		print(Username)
+    end
+
+    print(Username)
 	end
 end
 
 function PasswordHandler(event)
 	if ( event.phase == "began" ) then
+    if ( system.getInfo("platform") == "androd" or system.getInfo("platform") == "ios") then
     native.setKeyboardFocus( PasswordText )
+    end
     elseif ( event.phase == "ended" or event.phase == "submitted" ) then
 		Password = event.target.text
+    if ( system.getInfo("platform") == "androd" or system.getInfo("platform") == "ios") then
     native.setKeyboardFocus( nil )
+    end
 		print(Password)
 	end
 end
