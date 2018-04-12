@@ -111,6 +111,7 @@ function Pass1func(event)
 
     elseif ( event.phase == "ended" or event.phase == "submitted" ) then
 		OldPass = event.target.text
+    native.setKeyboardFocus( nil )
 		--print(Username)
 	end
 end
@@ -120,6 +121,7 @@ function Pass2func(event)
 
     elseif ( event.phase == "ended" or event.phase == "submitted" ) then
 		NewPass = event.target.text
+    native.setKeyboardFocus( nil )
 		--print(Username)
 	end
 end
