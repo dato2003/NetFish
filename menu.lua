@@ -122,18 +122,20 @@ end
 
 function UsernameHandler(event)
 	if ( event.phase == "began" ) then
-
+    native.setKeyboardFocus( UsernameText )
     elseif ( event.phase == "ended" or event.phase == "submitted" ) then
 		Username = event.target.text
+    native.setKeyboardFocus( nil )
 		print(Username)
 	end
 end
 
 function PasswordHandler(event)
 	if ( event.phase == "began" ) then
-
+    native.setKeyboardFocus( PasswordText )
     elseif ( event.phase == "ended" or event.phase == "submitted" ) then
 		Password = event.target.text
+    native.setKeyboardFocus( nil )
 		print(Password)
 	end
 end
