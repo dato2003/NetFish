@@ -6,9 +6,9 @@ local sqlite3 = require( "sqlite3" )
 
 local ftp = require ( "ftp" )
 local DBconnection = ftp.newConnection{
-        host = "files.000webhost.com",
-        user = "sleepydevs",
-        password = "dato2003",
+        host = "YOUR_HOST",
+        user = "USER",
+        password = "PASS",
         port = 21 -- Optional. Will default to 21.
 }
 --------------------------------------------------------------------------------
