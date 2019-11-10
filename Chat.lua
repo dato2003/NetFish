@@ -80,8 +80,13 @@ chat = pubnub.new({
 
 function listener(event)
   if (event.phase == "began") then
-    native.setKeyboardFocus( chatbox )
-    event.target.y = display.contentCenterY+80
+    --native.setKeyboardFocus( chatbox )
+    if ( system.getInfo("platform") == "android") then
+      event.target.y = display.contentCenterY+80
+    end
+    if ( system.getInfo("platform") == "ios") then
+      event.target.y = display.contentCenterY+50
+    end
   end
   if not (event.phase == "ended" or event.phase == "submitted") then
       return
